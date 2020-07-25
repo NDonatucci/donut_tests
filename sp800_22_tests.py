@@ -24,6 +24,7 @@ from __future__ import print_function
 
 import argparse
 import sys
+import numpy
 
 
 def read_bits_from_file(filename,bigendian):
@@ -82,30 +83,11 @@ filename = args.filename
 # X 3.15 Random Excursions Variant Test 
 
 
-testlist = [
-        'monobit_test',
-        'frequency_within_block_test',
-        'runs_test',
-        'longest_run_ones_in_a_block_test',
-        'binary_matrix_rank_test',
-        'dft_test',
-        'non_overlapping_template_matching_test',
-        'overlapping_template_matching_test',
-        'maurers_universal_test',
-        'linear_complexity_test',
-        'serial_test',
-        'approximate_entropy_test',
-        'cumulative_sums_test',
-        'random_excursion_test',
-        'random_excursion_variant_test']
+testlist = ['frequency_within_block_test']
 
-print("Tests of Distinguishability from Random")
-if args.list_tests:
-    for i,testname in zip(range(len(testlist)),testlist):
-        print(str(i+1).ljust(4)+": "+testname)
-    exit()
+arr = numpy.random.randint(0, 10, 100000)
 
-bits = read_bits_from_file(filename,bigendian)    
+#bits = read_bits_from_file(filename,bigendian) -> Escribir un metodo que lea algo de alguna manera
 gotresult=False
 if args.testname:
     if args.testname in testlist:    
@@ -136,7 +118,7 @@ else:
         m = __import__ ("sp800_22_"+testname)
         func = getattr(m,testname)
         
-        (success,p,plist) = func(bits)
+        (success,p,plist) = func(arr)
 
         summary_name = testname
         if success:
