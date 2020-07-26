@@ -56,6 +56,7 @@ def read_bits_from_file(filename,bigendian):
 import argparse
 import sys
 parser = argparse.ArgumentParser(description='Test data for distinguishability form random, using NIST SP800-22Rev1a algorithms.')
+parser.add_argument('alphabet_size', type=int, help='Size of alphabet to consider')
 parser.add_argument('filename', type=str, nargs='?', help='Filename of binary file to test')
 parser.add_argument('--be', action='store_false',help='Treat data as big endian bits within bytes. Defaults to little endian')
 parser.add_argument('-t', '--testname', default=None,help='Select the test to run. Defaults to running all tests. Use --list_tests to see the list')
@@ -65,6 +66,7 @@ args = parser.parse_args()
 
 bigendian = args.be
 filename = args.filename
+sigma = args.alphabet_size
 
 # X 3.1  Frequency (Monobits) Test
 # X 3.2  Frequency Test within a Block
@@ -85,7 +87,7 @@ filename = args.filename
 
 testlist = ['frequency_within_block_test']
 
-arr = numpy.random.randint(0, 10, 100000)
+arr = numpy.random.randint(0, sigma, 100000)
 
 #bits = read_bits_from_file(filename,bigendian) -> Escribir un metodo que lea algo de alguna manera
 gotresult=False
@@ -118,7 +120,7 @@ else:
         m = __import__ ("sp800_22_"+testname)
         func = getattr(m,testname)
         
-        (success,p,plist) = func(arr)
+        (success,p,plist) = func(arr, sigma)
 
         summary_name = testname
         if success:

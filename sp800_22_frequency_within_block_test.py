@@ -29,13 +29,13 @@ from scipy.stats import chisquare
 from gamma_functions import *
 
 
-def countBlockVars(block):
-    count = [0] * 10
+def countBlockVars(block, sigma):
+    count = [0] * sigma
     for i in block:
         count[i] = count[i] + 1
     return count
 
-def frequency_within_block_test(arr):
+def frequency_within_block_test(arr, sigma):
     # Compute number of blocks M = block size. N=num of blocks
     # N = floor(n/M)
     # miniumum block size 20 bits, most blocks 100
@@ -58,14 +58,14 @@ def frequency_within_block_test(arr):
     block_size = M #int(math.floor(len(bits)/num_of_blocks))
     #n = int(block_size * num_of_blocks)
     
-    expectedValue = M * 1.0/10.0
+    expectedValue = M * 1.0/sigma
     randomVariables = list()
     for i in range(num_of_blocks):
         block = arr[i*(block_size):((i+1)*(block_size))]
-        blockVars = countBlockVars(block)
+        blockVars = countBlockVars(block, sigma)
         randomVariables.extend(blockVars)
 
-    chisq, p = chisquare(randomVariables, [expectedValue] * N * 10, 10 + N - 2, None)
+    chisq, p = chisquare(randomVariables, [expectedValue] * N * sigma, sigma + N - 2, None)
     print(expectedValue)
     print(chisq)
     print(p)
