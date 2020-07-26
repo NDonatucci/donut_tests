@@ -65,7 +65,7 @@ def frequency_within_block_test(arr):
         blockVars = countBlockVars(block)
         randomVariables.extend(blockVars)
 
-    chisq, p = chisquare(randomVariables, [expectedValue] * N * 10, 0, None)
+    chisq, p = chisquare(randomVariables, [expectedValue] * N * 10, 10 + N - 2, None)
     print(expectedValue)
     print(chisq)
     print(p)
