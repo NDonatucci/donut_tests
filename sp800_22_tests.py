@@ -88,16 +88,14 @@ sigma = args.alphabet_size
 # X 3.15 Random Excursions Variant Test 
 
 
-testlist = ['frequency_within_block_test']
+testlist = ['monobit_test']
 
 if args.mode == "histogram":
-    m = __import__("sp800_22_frequency_within_block_test")
-    func = getattr(m, "frequency_within_block_test")
+    m = __import__("sp800_22_monobit_test")
+    func = getattr(m, "monobit_test")
     p_values = []
     for i in range(0, 10000):
         arr = numpy.random.randint(0, sigma, 100000)
-        m = __import__("sp800_22_frequency_within_block_test")
-        func = getattr(m, "frequency_within_block_test")
         (success,p,plist) = func(arr, sigma)
         p_values.append(p)
 
