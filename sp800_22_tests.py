@@ -64,6 +64,7 @@ parser.add_argument('--be', action='store_false',help='Treat data as big endian 
 parser.add_argument('-t', '--testname', default=None,help='Select the test to run. Defaults to running all tests. Use --list_tests to see the list')
 parser.add_argument('--list_tests', action='store_true',help='Display the list of tests')
 parser.add_argument('--mode', default="default", type=str)
+parser.add_argument('--file', default="quini-00.txt", type=str)
 
 args = parser.parse_args()
 
@@ -90,9 +91,27 @@ sigma = args.alphabet_size
 
 testlist = ['monobit_test']
 
-if args.mode == "histogram":
-    m = __import__("sp800_22_monobit_test")
-    func = getattr(m, "monobit_test")
+if args.mode == "file":
+    filename = args.file
+    arr = []
+    with open('quini/' + filename, 'r') as quini:
+        lines = quini.readlines()
+        for line in lines:
+            num = line.rstrip()
+            arr.append(int(num[0]))
+            arr.append(int(num[1]))
+            arr.append(int(num[2]))
+            arr.append(int(num[3]))
+        m = __import__("sp800_22_frequency_within_block_test")
+        func = getattr(m, "frequency_within_block_test")
+        (success,p,plist) = func(arr, sigma)
+        print(success)
+        print(p)
+
+
+elif args.mode == "histogram":
+    m = __import__("sp800_22_frequency_within_a_block_test")
+    func = getattr(m, "frequency_within_a_block_test")
     p_values = []
     for i in range(0, 10000):
         arr = numpy.random.randint(0, sigma, 100000)
