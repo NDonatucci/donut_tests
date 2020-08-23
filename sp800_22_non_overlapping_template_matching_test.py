@@ -25,89 +25,51 @@ from __future__ import print_function
 import math
 #from scipy.special import gamma, gammainc, gammaincc
 from gamma_functions import *
+from scipy.stats import chisquare, kstest
+import numpy as np
 import random
 
-def non_overlapping_template_matching_test(bits):
-    # The templates provdided in SP800-22rev1a
-    templates = [None for x in range(7)]
-    templates[0] = [[0,1],[1,0]]
-    templates[1] = [[0,0,1],[0,1,1],[1,0,0],[1,1,0]]
-    templates[2] = [[0,0,0,1],[0,0,1,1],[0,1,1,1],[1,0,0,0],[1,1,0,0],[1,1,1,0]]
-    templates[3] = [[0,0,0,0,1],[0,0,0,1,1],[0,0,1,0,1],[0,1,0,1,1],[0,0,1,1,1],[0,1,1,1,1],
-                    [1,1,1,0,0],[1,1,0,1,0],[1,0,1,0,0],[1,1,0,0,0],[1,0,0,0,0],[1,1,1,1,0]]
-    templates[4] = [[0,0,0,0,0,1],[0,0,0,0,1,1],[0,0,0,1,0,1],[0,0,0,1,1,1],[0,0,1,0,1,1],
-                    [0,0,1,1,0,1],[0,0,1,1,1,1],[0,1,0,0,1,1],
-                    [0,1,0,1,1,1],[0,1,1,1,1,1],[1,0,0,0,0,0],
-                    [1,0,1,0,0,0],[1,0,1,1,0,0],[1,1,0,0,0,0],
-                    [1,1,0,0,1,0],[1,1,0,1,0,0],[1,1,1,0,0,0],
-                    [1,1,1,0,1,0],[1,1,1,1,0,0],[1,1,1,1,1,0]]
-    templates[5] = [[0,0,0,0,0,0,1],[0,0,0,0,0,1,1],[0,0,0,0,1,0,1],[0,0,0,0,1,1,1],
-                    [0,0,0,1,0,0,1],[0,0,0,1,0,1,1],[0,0,0,1,1,0,1],[0,0,0,1,1,1,1],
-                    [0,0,1,0,0,1,1],[0,0,1,0,1,0,1],[0,0,1,0,1,1,1],[0,0,1,1,0,1,1],
-                    [0,0,1,1,1,0,1],[0,0,1,1,1,1,1],[0,1,0,0,0,1,1],[0,1,0,0,1,1,1],
-                    [0,1,0,1,0,1,1],[0,1,0,1,1,1,1],[0,1,1,0,1,1,1],[0,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0],[1,0,0,1,0,0,0],[1,0,1,0,0,0,0],[1,0,1,0,1,0,0],
-                    [1,0,1,1,0,0,0],[1,0,1,1,1,0,0],[1,1,0,0,0,0,0],[1,1,0,0,0,1,0],
-                    [1,1,0,0,1,0,0],[1,1,0,1,0,0,0],[1,1,0,1,0,1,0],[1,1,0,1,1,0,0],
-                    [1,1,1,0,0,0,0],[1,1,1,0,0,1,0],[1,1,1,0,1,0,0],[1,1,1,0,1,1,0],
-                    [1,1,1,1,0,0,0],[1,1,1,1,0,1,0],[1,1,1,1,1,0,0],[1,1,1,1,1,1,0]]
-    templates[6] = [[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,1,1],[0,0,0,0,0,1,0,1],[0,0,0,0,0,1,1,1],
-                    [0,0,0,0,1,0,0,1],[0,0,0,0,1,0,1,1],[0,0,0,0,1,1,0,1],[0,0,0,0,1,1,1,1],
-                    [0,0,0,1,0,0,1,1],[0,0,0,1,0,1,0,1],[0,0,0,1,0,1,1,1],[0,0,0,1,1,0,0,1],
-                    [0,0,0,1,1,0,1,1],[0,0,0,1,1,1,0,1],[0,0,0,1,1,1,1,1],[0,0,1,0,0,0,1,1],
-                    [0,0,1,0,0,1,0,1],[0,0,1,0,0,1,1,1],[0,0,1,0,1,0,1,1],[0,0,1,0,1,1,0,1],
-                    [0,0,1,0,1,1,1,1],[0,0,1,1,0,1,0,1],[0,0,1,1,0,1,1,1],[0,0,1,1,1,0,1,1],
-                    [0,0,1,1,1,1,0,1],[0,0,1,1,1,1,1,1],[0,1,0,0,0,0,1,1],[0,1,0,0,0,1,1,1],
-                    [0,1,0,0,1,0,1,1],[0,1,0,0,1,1,1,1],[0,1,0,1,0,0,1,1],[0,1,0,1,0,1,1,1],
-                    [0,1,0,1,1,0,1,1],[0,1,0,1,1,1,1,1],[0,1,1,0,0,1,1,1],[0,1,1,0,1,1,1,1],
-                    [0,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0],[1,0,0,1,0,0,0,0],[1,0,0,1,1,0,0,0],
-                    [1,0,1,0,0,0,0,0],[1,0,1,0,0,1,0,0],[1,0,1,0,1,0,0,0],[1,0,1,0,1,1,0,0],
-                    [1,0,1,1,0,0,0,0],[1,0,1,1,0,1,0,0],[1,0,1,1,1,0,0,0],[1,0,1,1,1,1,0,0],
-                    [1,1,0,0,0,0,0,0],[1,1,0,0,0,0,1,0],[1,1,0,0,0,1,0,0],[1,1,0,0,1,0,0,0],
-                    [1,1,0,0,1,0,1,0],[1,1,0,1,0,0,0,0],[1,1,0,1,0,0,1,0],[1,1,0,1,0,1,0,0],
-                    [1,1,0,1,1,0,0,0],[1,1,0,1,1,0,1,0],[1,1,0,1,1,1,0,0],[1,1,1,0,0,0,0,0],
-                    [1,1,1,0,0,0,1,0],[1,1,1,0,0,1,0,0],[1,1,1,0,0,1,1,0],[1,1,1,0,1,0,0,0],
-                    [1,1,1,0,1,0,1,0],[1,1,1,0,1,1,0,0],[1,1,1,1,0,0,0,0],[1,1,1,1,0,0,1,0],
-                    [1,1,1,1,0,1,0,0],[1,1,1,1,0,1,1,0],[1,1,1,1,1,0,0,0],[1,1,1,1,1,0,1,0],
-                    [1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,0]]
-    
-    n = len(bits)
-    
-    # Choose the template B
-    r = random.SystemRandom()
-    template_list = r.choice(templates)
-    B = r.choice(template_list)
-    
+def countBlockAppearances(arr, pattern):
+    position = 0
+    count = 0
+    pattern = list(pattern)
+    m = len(pattern)
+    while position < (len(arr)-m):
+        if np.array_equal(arr[position:position+m], pattern):
+            position += m
+            count += 1
+        else:
+            position += 1
+    return count
+
+def non_overlapping_template_matching_test(arr, sigma):
+    # Need to generate aperiodic pattern of length, of alphabet sigma.
+    n = len(arr)
+
+    B = [0,0,0,0,0,0,0,0,1] # pattern
     m = len(B)
     
     N = 8
-    M = int(math.floor(len(bits)/8))
+    M = int(math.floor(n/8))
     n = M*N
-    
-    blocks = list() # Split into N blocks of M bits
+    block_size = M
+
+    expectedValue = float(M-m+1)/float(sigma**m)
+    randomVariables = list()
     for i in range(N):
-        blocks.append(bits[i*M:(i+1)*M])
+        block = arr[i*block_size:((i+1)*block_size)]
+        randomVariables.append(countBlockAppearances(block, B))
 
-    W=list() # Count the number of matches of the template in each block Wj
-    for block in blocks:
-        position = 0
-        count = 0
-        while position < (M-m):
-            if block[position:position+m] == B:
-                position += m
-                count += 1
-            else:
-                position += 1
-        W.append(count)
+    #esperanza = float(M-m+1)/float(2**m) # Compute mu and sigma
+    #varianza = M * ((1.0/float(2**m))-(float((2*m)-1)/float(2**(2*m))))
 
-    mu = float(M-m+1)/float(2**m) # Compute mu and sigma
-    sigma = M * ((1.0/float(2**m))-(float((2*m)-1)/float(2**(2*m))))
+    #chisq = 0.0  # Compute Chi-Square
+    #for j in range(N):
+    #    chisq += (float((randomVariables[j] - esperanza)**2))/(float(varianza**2))
 
-    chisq = 0.0  # Compute Chi-Square
-    for j in range(N):
-        chisq += ((W[j] - mu)**2)/(sigma**2)
+    #p = gammaincc(N/2.0, chisq/2.0) # Compute P value
 
-    p = gammaincc(N/2.0, chisq/2.0) # Compute P value
+    chisq, p = chisquare(randomVariables, [expectedValue] * N)
 
     success = ( p >= 0.01)
     return (success,p,None)

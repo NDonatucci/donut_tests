@@ -89,7 +89,7 @@ sigma = args.alphabet_size
 # X 3.15 Random Excursions Variant Test 
 
 
-testlist = ['monobit_test']
+testlist = ['non_overlapping_template_matching_test']
 
 if args.mode == "file":
     filename = args.file
@@ -110,11 +110,12 @@ if args.mode == "file":
 
 
 elif args.mode == "histogram":
-    m = __import__("sp800_22_frequency_within_a_block_test")
-    func = getattr(m, "frequency_within_a_block_test")
+    m = __import__("sp800_22_non_overlapping_template_matching_test")
+    func = getattr(m, "non_overlapping_template_matching_test")
     p_values = []
-    for i in range(0, 10000):
-        arr = numpy.random.randint(0, sigma, 100000)
+    for i in range(0, 1000):
+        print(i)
+        arr = numpy.random.randint(0, sigma, 10000)
         (success,p,plist) = func(arr, sigma)
         p_values.append(p)
 
