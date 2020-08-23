@@ -46,7 +46,7 @@ def non_overlapping_template_matching_test(arr, sigma):
     # Need to generate aperiodic pattern of length, of alphabet sigma.
     n = len(arr)
 
-    B = [0,0,0,0,0,0,0,1] # pattern
+    B = [0,0,0,0,0,0,0,0,1] # pattern
     m = len(B)
     
     N = 8
@@ -60,16 +60,16 @@ def non_overlapping_template_matching_test(arr, sigma):
         block = arr[i*block_size:((i+1)*block_size)]
         randomVariables.append(countBlockAppearances(block, B))
 
-    esperanza = float(M-m+1)/float(2**m) # Compute mu and sigma
-    varianza = M * ((1.0/float(2**m))-(float((2*m)-1)/float(2**(2*m))))
+    #esperanza = float(M-m+1)/float(2**m) # Compute mu and sigma
+    #varianza = M * ((1.0/float(2**m))-(float((2*m)-1)/float(2**(2*m))))
 
-    chisq = 0.0  # Compute Chi-Square
-    for j in range(N):
-        chisq += (float((randomVariables[j] - esperanza)**2))/(float(varianza**2))
+    #chisq = 0.0  # Compute Chi-Square
+    #for j in range(N):
+    #    chisq += (float((randomVariables[j] - esperanza)**2))/(float(varianza**2))
 
-    p = gammaincc(N/2.0, chisq/2.0) # Compute P value
+    #p = gammaincc(N/2.0, chisq/2.0) # Compute P value
 
-    #chisq, p = chisquare(randomVariables, [expectedValue] * N)
+    chisq, p = chisquare(randomVariables, [expectedValue] * N)
 
     success = ( p >= 0.01)
     return (success,p,None)
