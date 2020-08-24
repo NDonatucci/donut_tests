@@ -65,12 +65,14 @@ parser.add_argument('-t', '--testname', default=None,help='Select the test to ru
 parser.add_argument('--list_tests', action='store_true',help='Display the list of tests')
 parser.add_argument('--mode', default="default", type=str)
 parser.add_argument('--file', default="quini-00.txt", type=str)
+parser.add_argument('--test', default="monobit", type=str)
 
 args = parser.parse_args()
 
 bigendian = args.be
 filename = args.filename
 sigma = args.alphabet_size
+test = args.test
 
 # X 3.1  Frequency (Monobits) Test
 # X 3.2  Frequency Test within a Block
@@ -102,20 +104,20 @@ if args.mode == "file":
             arr.append(int(num[1]))
             arr.append(int(num[2]))
             arr.append(int(num[3]))
-        m = __import__("sp800_22_frequency_within_block_test")
-        func = getattr(m, "frequency_within_block_test")
+        m = __import__("sp800_22_" + test + "_test")
+        func = getattr(m, test + "_test")
         (success,p,plist) = func(arr, sigma)
         print(success)
         print(p)
 
 
 elif args.mode == "histogram":
-    m = __import__("sp800_22_non_overlapping_template_matching_test")
-    func = getattr(m, "non_overlapping_template_matching_test")
+    m = __import__("sp800_22_" + test + "_test")
+    func = getattr(m, test + "_test")
     p_values = []
     for i in range(0, 1000):
         print(i)
-        arr = numpy.random.randint(0, sigma, 10000)
+        arr = numpy.random.randint(0, sigma, 100000)
         (success,p,plist) = func(arr, sigma)
         p_values.append(p)
 
@@ -125,7 +127,7 @@ elif args.mode == "histogram":
     print(kspvalue)
 
 else:
-    arr = numpy.random.randint(0, sigma, 10000)
+    arr = numpy.random.randint(0, sigma, 100000)
     results = list()
     
     for testname in testlist:
