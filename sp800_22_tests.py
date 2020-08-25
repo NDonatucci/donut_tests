@@ -91,7 +91,7 @@ test = args.test
 # X 3.15 Random Excursions Variant Test 
 
 
-testlist = ['non_overlapping_template_matching_test']
+testlist = [test +'_test']
 
 if args.mode == "file":
     filename = args.file
