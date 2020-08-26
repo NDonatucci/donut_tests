@@ -23,25 +23,16 @@
 from __future__ import print_function
 
 import math
-import matplotlib.pyplot
-from fractions import Fraction
 
-from scipy.stats import chisquare, kstest
-from gamma_functions import *
+from scipy.stats import chisquare
 
 
-def countBlockVars(block, sigma):
+def count_block_vars(block, sigma):
     count = [0] * sigma
     for i in block:
         count[i] = count[i] + 1
     return count
 
-def countOnes(block, sigma):
-    count = 0
-    for i in block:
-        if i == 1:
-            count = count + 1
-    return count
 
 def frequency_within_block_test(arr, sigma):
     # Compute number of blocks M = block size. N=num of blocks
@@ -57,68 +48,18 @@ def frequency_within_block_test(arr, sigma):
     if len(arr) < 100:
         print("Too little data for test. Supply at least 100 bits")
         return False,1.0,None
-    
-    # print("  n = %d" % len(arr))
-    # print("  N = %d" % N)
-    # print("  M = %d" % M)
-    
-    num_of_blocks = N
-    block_size = M #int(math.floor(len(bits)/num_of_blocks))
-    #n = int(block_size * num_of_blocks)
-    
-    expectedValue = M * 1.0/sigma
-    randomVariables = list()
-    for i in range(num_of_blocks):
-        block = arr[i*(block_size):((i+1)*(block_size))]
-        blockVars = countBlockVars(block, sigma)
-        randomVariables.extend(blockVars)
 
-    chisq, p = chisquare(randomVariables, [expectedValue] * (N * sigma), N - 1, None)
+    num_of_blocks = N
+    block_size = M
+
+    expected_value = M * 1.0/sigma
+    random_variables = list()
+    for i in range(num_of_blocks):
+        block = arr[i*block_size:((i+1)*block_size)]
+        block_vars = count_block_vars(block, sigma)
+        random_variables.extend(block_vars)
+
+    chisq, p = chisquare(random_variables, [expected_value] * (N * sigma), N - 1, None)
 
     success = (p >= 0.01)
     return success, p, None
-
-# def count_ones_zeroes(bits):
-#     ones = 0
-#     zeroes = 0
-#     for bit in bits:
-#         if (bit == 1):
-#             ones += 1
-#         else:
-#             zeroes += 1
-#     return (zeroes,ones)
-#
-# def frequency_within_block_test_nist(bits):
-#     # Compute number of blocks M = block size. N=num of blocks
-#     # N = floor(n/M)
-#     # miniumum block size 20 bits, most blocks 100
-#     n = len(bits)
-#     M = 20
-#     N = int(math.floor(n/M))
-#     if N > 99:
-#         N=99
-#         M = int(math.floor(n/N))
-#
-#     if len(bits) < 100:
-#         print("Too little data for test. Supply at least 100 bits")
-#         return False,1.0,None
-#
-#     num_of_blocks = N
-#     block_size = M #int(math.floor(len(bits)/num_of_blocks))
-#     #n = int(block_size * num_of_blocks)
-#
-#     proportions = list()
-#     for i in range(num_of_blocks):
-#         block = bits[i*(block_size):((i+1)*(block_size))]
-#         zeroes,ones = count_ones_zeroes(block)
-#         proportions.append(Fraction(ones,block_size))
-#
-#     chisq = 0.0
-#     for prop in proportions:
-#         chisq += 4.0*block_size*((prop - Fraction(1,2))**2)
-#
-#     p = gammaincc((num_of_blocks/2.0),float(chisq)/2.0)
-#     success = (p >= 0.01)
-#     return (success,p,None)
-
-

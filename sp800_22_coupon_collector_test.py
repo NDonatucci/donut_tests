@@ -24,13 +24,12 @@ from __future__ import print_function
 
 from math import comb
 from scipy.special import factorial
-from gamma_functions import *
-import numpy as np
 
 from scipy.stats import chisquare
 
-def getCouponList(arr, sigma, t):
-    couponList = [0] * (t + 1)
+
+def get_histogram(arr, sigma, t):
+    buckets = [0] * (t + 1)
     d = dict()
     distinct = 0
     count = 0
@@ -38,49 +37,41 @@ def getCouponList(arr, sigma, t):
         count +=1
         if elem not in d:
             d[elem] = 1
-            distinct +=1
+            distinct += 1
             if distinct == sigma:
                 d = dict()
                 distinct = 0
                 if count >= t:
-                    couponList[t]+=1
+                    buckets[t] += 1
                 else:
-                    couponList[count] +=1
+                    buckets[count] += 1
                 count = 0
-    return couponList[sigma:t + 1] #revisar esto
+    return buckets[sigma:t + 1]
 
 
-def generateProbabilities(sigma, t):
+def generate_probabilities(sigma, t):
     probabilities = list()
     for r in range(sigma, t):
-        dFact = factorial(sigma, True)
-        dr = sigma**r
-        divisionLoca = float(dFact) / float(dr)
-        rogerSterling = sterling(r -1, sigma - 1)
-        #print("Sterling: ", sigma -1, r-1, ": ", rogerSterling)
-        probabilities.append(divisionLoca*rogerSterling)
-    lastNumber = 1 - (factorial(sigma, True)/sigma**(t-1))*sterling(t-1,sigma)
-    probabilities.append(lastNumber)
+        probabilities.append(float(factorial(sigma, True)) / float(sigma**r) * stirling(r - 1, sigma - 1))
+    probabilities.append(1 - (factorial(sigma, True)/sigma**(t-1))*stirling(t-1, sigma))
     return probabilities
 
 
-def sterling(n, k):
-    sum = 0
+def stirling(n, k):
+    stirling_number = 0
     for i in range(k + 1):
-        sum += ((-1)**i)*comb(k,i)*((k-i)**n)
-    return sum * 1.0/factorial(k, True)
+        stirling_number += ((-1)**i) * comb(k, i) * ((k-i)**n)
+    return stirling_number * 1.0 / factorial(k, True)
 
 
 def coupon_collector_test(arr, sigma):
     t = 5
-    couponLengths = getCouponList(arr, sigma, t)
-    if len(couponLengths) != t - sigma + 1:
-        print("TUVIEJA")
-    probabilities = generateProbabilities(sigma, t)
-    amountOfCoupons = sum(couponLengths)
-    expectedValues = list(map(lambda x: x * amountOfCoupons, probabilities))
+    histogram = get_histogram(arr, sigma, t)
+    probabilities = generate_probabilities(sigma, t)
+    n = sum(histogram)
+    expected_values = list(map(lambda x: x * n, probabilities))
 
-    chisq, p = chisquare(couponLengths, expectedValues, 0, None)
+    chisq, p = chisquare(histogram, expected_values, 0, None)
 
-    success = ( p >= 0.01)
-    return (success,p,None)
+    success = (p >= 0.01)
+    return success, p, None

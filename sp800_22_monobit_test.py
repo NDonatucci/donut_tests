@@ -22,19 +22,15 @@
 
 from __future__ import print_function
 
-import math
-import matplotlib.pyplot
-from fractions import Fraction
-
-from scipy.stats import chisquare, kstest
-from gamma_functions import *
+from scipy.stats import chisquare
 
 
-def countVars(block, sigma):
+def count_vars(block, sigma):
     count = [0] * sigma
     for i in block:
         count[i] = count[i] + 1
     return count
+
 
 def monobit_test(arr, sigma):
     # Compute number of blocks M = block size. N=num of blocks
@@ -43,15 +39,12 @@ def monobit_test(arr, sigma):
 
     if len(arr) < 100:
         print("Too little data for test. Supply at least 100 bits")
-        return False,1.0,None
+        return False, 1.0, None
 
-    expectedValue = n * 1.0/sigma
-    randomVariables = countVars(arr, sigma)
+    expected_value = n * 1.0 / sigma
+    random_variables = count_vars(arr, sigma)
 
-
-    chisq, p = chisquare(randomVariables, [expectedValue] * sigma, 0, None)
+    chisq, p = chisquare(random_variables, [expected_value] * sigma, 0, None)
 
     success = (p >= 0.01)
     return success, p, None
-
-
