@@ -27,9 +27,19 @@ from scipy.special import factorial
 from scipy.stats import chisquare
 
 
-def get_histogram(arr, sigma, t):
+def get_histogram(coupons, sigma, t):
     buckets = [0] * (t + 1)
+    for coupon in coupons:
+        if coupon >= t:
+            buckets[t] += 1
+        else:
+            buckets[coupon] += 1
+    return buckets[sigma:t + 1]
+
+
+def get_coupons(arr, sigma):
     d = dict()
+    coupons = list()
     distinct = 0
     count = 0
     for elem in arr:
@@ -40,12 +50,9 @@ def get_histogram(arr, sigma, t):
             if distinct == sigma:
                 d = dict()
                 distinct = 0
-                if count >= t:
-                    buckets[t] += 1
-                else:
-                    buckets[count] += 1
+                coupons.append(count)
                 count = 0
-    return buckets[sigma:t + 1]
+    return coupons
 
 
 def generate_probabilities(sigma, t):
@@ -56,11 +63,21 @@ def generate_probabilities(sigma, t):
     return probabilities
 
 
+def find_t(sigma, n):
+    t = sigma
+    tail = 10
+    while tail >= 5:
+        tail = n * (1 - (factorial(sigma, True)/sigma**(t-1))*stirling(t-1, sigma))
+        t += 1
+    return t
+
+
 def coupon_collector_test(arr, sigma):
-    t = 30
-    histogram = get_histogram(arr, sigma, t)
+    coupons = get_coupons(arr, sigma)
+    n = len(coupons)
+    t = find_t(sigma, n)
+    histogram = get_histogram(coupons, sigma, t)
     probabilities = generate_probabilities(sigma, t)
-    n = sum(histogram)
     expected_values = list(map(lambda x: x * n, probabilities))
 
     chisq, p = chisquare(histogram, expected_values, 0, None)
