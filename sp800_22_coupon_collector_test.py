@@ -22,9 +22,8 @@
 
 from __future__ import print_function
 
-from math import comb
+from utils import stirling
 from scipy.special import factorial
-
 from scipy.stats import chisquare
 
 
@@ -57,15 +56,8 @@ def generate_probabilities(sigma, t):
     return probabilities
 
 
-def stirling(n, k):
-    stirling_number = 0
-    for i in range(k + 1):
-        stirling_number += ((-1)**i) * comb(k, i) * ((k-i)**n)
-    return stirling_number * 1.0 / factorial(k, True)
-
-
 def coupon_collector_test(arr, sigma):
-    t = 5
+    t = 30
     histogram = get_histogram(arr, sigma, t)
     probabilities = generate_probabilities(sigma, t)
     n = sum(histogram)

@@ -23,8 +23,7 @@
 from __future__ import print_function
 
 from scipy.stats import chisquare
-from math import comb
-from scipy.special import factorial
+from utils import stirling
 import math
 
 
@@ -50,13 +49,6 @@ def generate_probabilities(sigma, hand_size):
         mult = mult / (sigma**hand_size)
         res[r - 1] = mult * stirling(hand_size, r)
     return res
-
-
-def stirling(n, k):
-    stirling_number = 0
-    for i in range(k + 1):
-        stirling_number += ((-1)**i) * comb(k, i) * ((k-i)**n)
-    return stirling_number * 1.0 / factorial(k, True)
 
 
 def poker_test(arr, sigma):
