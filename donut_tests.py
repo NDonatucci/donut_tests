@@ -104,7 +104,7 @@ if args.mode == "file":
             arr.append(int(num[1]))
             arr.append(int(num[2]))
             arr.append(int(num[3]))
-        m = __import__("sp800_22_" + test + "_test")
+        m = __import__("donut_" + test + "_test")
         func = getattr(m, test + "_test")
         (success,p,plist) = func(arr, sigma)
         print(success)
@@ -112,7 +112,7 @@ if args.mode == "file":
 
 
 elif args.mode == "histogram":
-    m = __import__("sp800_22_" + test + "_test")
+    m = __import__("donut_" + test + "_test")
     func = getattr(m, test + "_test")
     p_values = []
     for i in range(0, 1000):
@@ -132,7 +132,7 @@ else:
     
     for testname in testlist:
         print("TEST: %s" % testname)
-        m = __import__ ("sp800_22_"+testname)
+        m = __import__ ("donut_"+testname)
         func = getattr(m,testname)
         
         (success,p,plist) = func(arr, sigma)
