@@ -126,6 +126,22 @@ elif args.mode == "histogram":
     statistic, kspvalue = scipy.stats.kstest(p_values, 'uniform')
     print(kspvalue)
 
+elif args.mode == "distinct":
+    m = __import__("donut_" + test + "_test")
+    func = getattr(m, test + "_test")
+    p_values = []
+    for i in range(0, 1000):
+        print(i)
+        arr = list(range(0, 1000000))
+        arr = numpy.random.permutation(arr)
+        (success,p,plist) = func(arr, sigma)
+        p_values.append(p)
+
+    matplotlib.pyplot.hist(p_values, 10)
+    matplotlib.pyplot.show()
+    statistic, kspvalue = scipy.stats.kstest(p_values, 'uniform')
+    print(kspvalue)
+
 else:
     arr = numpy.random.randint(0, sigma, 100000)
     results = list()
