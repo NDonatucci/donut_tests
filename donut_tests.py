@@ -143,7 +143,7 @@ elif args.mode == "distinct":
     print(kspvalue)
 
 else:
-    arr = numpy.random.randint(0, sigma, 10000)
+    arr = numpy.random.randint(0, sigma, 100000)
     results = list()
     
     for testname in testlist:
