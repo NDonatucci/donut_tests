@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-# sp800_22_frequency_within_block_test.pylon
-# 
-# Copyright (C) 2017 David Johnston
-# This program is distributed under the terms of the GNU General Public License.
-# 
-# This file is part of sp800_22_tests.
-# 
-# sp800_22_tests is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# sp800_22_tests is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with sp800_22_tests.  If not, see <http://www.gnu.org/licenses/>.
-
 from __future__ import print_function
 
 import math
@@ -34,6 +14,9 @@ def count_block_vars(block, sigma):
     return count
 
 
+# At least n=100 recommended
+# No more than 99 blocks recommended
+# M = Block Size
 def frequency_within_block_test(arr, sigma):
     # Compute number of blocks M = block size. N=num of blocks
     # N = floor(n/M)
@@ -44,10 +27,6 @@ def frequency_within_block_test(arr, sigma):
     if N > 99:
         N=99
         M = int(math.floor(n/N))
-    
-    if len(arr) < 100:
-        print("Too little data for test. Supply at least 100 bits")
-        return False,1.0,None
 
     num_of_blocks = N
     block_size = M
