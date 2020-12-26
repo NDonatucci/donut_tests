@@ -69,6 +69,7 @@ def collapse(arr, i):
     return res
 
 
+# hand_size = Size of hand
 def poker_test(arr, sigma):
     hand_size = 5
     random_variables = get_hands(arr, hand_size)
@@ -78,7 +79,6 @@ def poker_test(arr, sigma):
     random_variables = collapse(random_variables, i)
     probabilities = collapse(probabilities, i)
     expected_values = list(map(lambda x: x * n, probabilities))
-
 
     chisq, p = chisquare(random_variables, expected_values, 0, None)
 

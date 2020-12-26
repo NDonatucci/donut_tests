@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-# sp800_22_overlapping_template_mathcing_test.py
-# 
-# Copyright (C) 2017 David Johnston
-# This program is distributed under the terms of the GNU General Public License.
-# 
-# This file is part of sp800_22_tests.
-# 
-# sp800_22_tests is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# sp800_22_tests is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with sp800_22_tests.  If not, see <http://www.gnu.org/licenses/>.
-
 from __future__ import print_function
 
 from utils import stirling
@@ -37,7 +17,7 @@ def get_histogram(coupons, sigma, t):
     return buckets[sigma:t + 1]
 
 
-def get_coupons(arr, sigma):
+def get_album_sizes(arr, sigma):
     d = dict()
     coupons = list()
     distinct = 0
@@ -72,11 +52,12 @@ def find_t(sigma, n):
     return t
 
 
+# t = Album size after which all categories will be collapsed.
 def coupon_collector_test(arr, sigma):
-    coupons = get_coupons(arr, sigma)
-    n = len(coupons)
+    album_sizes = get_album_sizes(arr, sigma)
+    n = len(album_sizes)
     t = find_t(sigma, n)
-    histogram = get_histogram(coupons, sigma, t)
+    histogram = get_histogram(album_sizes, sigma, t)
     probabilities = generate_probabilities(sigma, t)
     expected_values = list(map(lambda x: x * n, probabilities))
 

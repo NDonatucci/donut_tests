@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-# sp800_22_non_overlapping_template_matching_test.py
-# 
-# Copyright (C) 2017 David Johnston
-# This program is distributed under the terms of the GNU General Public License.
-# 
-# This file is part of sp800_22_tests.
-# 
-# sp800_22_tests is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# sp800_22_tests is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with sp800_22_tests.  If not, see <http://www.gnu.org/licenses/>.
-
 from __future__ import print_function
 
 import math
@@ -32,15 +12,17 @@ def count_block_appearances(arr, m, sigma):
     for i in range(math.floor(len(arr)/m)):
         d["".join(map(str, arr[i*m:(i+1)*m]))] += 1
     listorti = list(d.values())
-    longitud = sigma**m
-    ble = len(listorti)
-    listorti.extend([0]*(longitud - ble))
+    number_of_words = sigma**m
+    observed_words = len(listorti)
+    listorti.extend([0]*(number_of_words - observed_words))
     return listorti
 
 
+# no more than 99 blocks recommended
+# m = length of pattern
+# M = block size
 def frequency_of_words_test(arr, sigma):
     n = len(arr)
-
     m = 3
     
     N = 99

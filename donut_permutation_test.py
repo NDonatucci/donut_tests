@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-# sp800_22_frequency_within_block_test.pylon
-#
-# Copyright (C) 2017 David Johnston
-# This program is distributed under the terms of the GNU General Public License.
-#
-# This file is part of sp800_22_tests.
-#
-# sp800_22_tests is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# sp800_22_tests is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with sp800_22_tests.  If not, see <http://www.gnu.org/licenses/>.
-
 from __future__ import print_function
 
 from scipy.stats import chisquare
@@ -42,7 +22,6 @@ def analise_permutation(block, t):
         sub_block = block[0:r]
         max_item = max(sub_block)
         s = np.where(sub_block == max_item)[0][0]
-        #s = sub_block.index(max_item)
         f = r * f + s
         block = swap(block, r - 1, s)
         r -= 1
@@ -59,6 +38,7 @@ def get_permutations(arr, t):
     return res
 
 
+# t = word length
 def permutation_test(arr, sigma):
     t = 5
     t_fact = factorial(t, True)
