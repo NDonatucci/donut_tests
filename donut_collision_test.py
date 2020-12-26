@@ -70,7 +70,7 @@ def count_collisions(arr):
     return collisions
 
 
-def collision_test(arr, sigma):
+def collision_test(arr, sigma, params):
     calculate_percentage_points(sigma, len(arr))
     collisions = count_collisions(arr)
     print(collisions)

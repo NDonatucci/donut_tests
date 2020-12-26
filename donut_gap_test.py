@@ -66,14 +66,17 @@ def generate_probabilities(p, t):
 # Beta = Higher end of interval
 # m = How many integers to use for a single float
 # t = Gap size after which categories will be collapsed
-def gap_test(arr, sigma):
-    float_arr = transform_input(arr, sigma, 5)  # block size?
-    alpha = 1/3
-    beta = 2/3
+def gap_test(arr, sigma, params):
+    m = params["m"] if "m" in params else 5
+    alpha = params["alpha"] if "alpha" in params else 1/3
+    beta = params["beta"] if "beta" in params else 2/3
 
+    float_arr = transform_input(arr, sigma, m)
     gaps = get_gaps(float_arr, alpha, beta)
     n = len(gaps)
-    t = find_t(beta - alpha, n)
+
+    t = params["t"] if "t" in params else find_t(beta - alpha, n)
+
     histogram = get_histogram(gaps, t)
     probabilities = generate_probabilities(beta - alpha, t)
     expected_values = list(map(lambda x: x * n, probabilities))

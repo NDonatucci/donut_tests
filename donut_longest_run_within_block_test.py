@@ -64,10 +64,10 @@ def collapse_categories(arr, index):
 # t = Given character of the alphabet
 # m = Block Size
 # algo pal colapso de la cola?
-def longest_run_within_block_test(arr, sigma):
-    t = 0
+def longest_run_within_block_test(arr, sigma, params):
+    t = params["character"] if "character" in params else 0
+    block_size = params["block_size"] if "block_size" in params else 40
     n = len(arr)
-    block_size = 40
     d_list = calculate_d(block_size + 2, sigma)
     probs = [0] * block_size
     for i in range(0, len(probs)):

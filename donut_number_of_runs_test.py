@@ -46,7 +46,7 @@ def get_z(r, mu, stddev):
         return (r - mu + 0.5) / stddev
 
 
-def number_of_runs_test(arr, sigma):
+def number_of_runs_test(arr, sigma, params):
     number_of_characters = count_vars(arr, sigma)
     n = len(arr)
     mu = get_mu(number_of_characters, n)

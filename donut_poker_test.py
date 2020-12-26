@@ -70,8 +70,8 @@ def collapse(arr, i):
 
 
 # hand_size = Size of hand
-def poker_test(arr, sigma):
-    hand_size = 5
+def poker_test(arr, sigma, params):
+    hand_size = params["hand_size"] if "hand_size" in params else 5
     random_variables = get_hands(arr, hand_size)
     probabilities = generate_probabilities(sigma, hand_size)
     n = sum(random_variables)

@@ -21,15 +21,14 @@ def count_block_appearances(arr, m, sigma):
 # no more than 99 blocks recommended
 # m = length of pattern
 # M = block size
-def frequency_of_words_test(arr, sigma):
+def frequency_of_words_test(arr, sigma, params):
     n = len(arr)
-    m = 3
-    
-    N = 99
-    M = int(math.floor(n/N))
-    block_size = M
+    m = params["pattern_length"] if "pattern_length" in params else 3
+    block_size = params["block_size"] if "block_size" in params else int(math.floor(n/99))
 
-    expected_value = float(M//m)/float(sigma**m)
+    N = int(math.floor(n/block_size))
+
+    expected_value = float(block_size//m)/float(sigma**m)
     random_variables = list()
     for i in range(N):
         block = arr[i*block_size:((i+1)*block_size)]

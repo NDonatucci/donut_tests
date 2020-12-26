@@ -39,7 +39,7 @@ def get_permutations(arr, t):
 
 
 # t = word length
-def permutation_test(arr, sigma):
+def permutation_test(arr, sigma, params):
     t = 5
     t_fact = factorial(t, True)
     random_variables = get_permutations(arr, t)

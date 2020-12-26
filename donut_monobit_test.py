@@ -13,7 +13,7 @@ def count_vars(block, sigma):
 
 
 # At least n=100 recommended
-def monobit_test(arr, sigma):
+def monobit_test(arr, sigma, params):
     n = len(arr)
 
     expected_value = n * 1.0 / sigma

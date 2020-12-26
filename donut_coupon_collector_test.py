@@ -53,10 +53,12 @@ def find_t(sigma, n):
 
 
 # t = Album size after which all categories will be collapsed.
-def coupon_collector_test(arr, sigma):
+def coupon_collector_test(arr, sigma, params):
     album_sizes = get_album_sizes(arr, sigma)
     n = len(album_sizes)
-    t = find_t(sigma, n)
+
+    t = params["t"] if "t" in params else find_t(sigma, n)
+
     histogram = get_histogram(album_sizes, sigma, t)
     probabilities = generate_probabilities(sigma, t)
     expected_values = list(map(lambda x: x * n, probabilities))
