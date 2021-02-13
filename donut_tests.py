@@ -115,9 +115,9 @@ elif args.mode == "histogram":
     m = __import__("donut_" + test + "_test")
     func = getattr(m, test + "_test")
     p_values = []
-    for i in range(0, 10000):
+    for i in range(0, 1000):
         print(i)
-        arr = numpy.random.randint(0, sigma, 100000)
+        arr = numpy.random.randint(0, sigma, 1000000)
         (success,p,plist) = func(arr, sigma)
         p_values.append(p)
 
@@ -143,7 +143,7 @@ elif args.mode == "distinct":
     print(kspvalue)
 
 else:
-    arr = numpy.random.randint(0, sigma, 10000)
+    arr = numpy.random.randint(0, sigma, 1000000)
     results = list()
     
     for testname in testlist:

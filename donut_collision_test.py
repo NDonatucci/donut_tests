@@ -23,6 +23,7 @@
 from __future__ import print_function
 
 from scipy.stats import chisquare
+import math
 
 
 def calculate_percentage_points(m, n):
@@ -43,20 +44,20 @@ def calculate_percentage_points(m, n):
                 if j == j0:
                     j0 += 1
 
-    T = [0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99, 1.00]
+    # A[j] = prob de que exactamente j urnas estén ocupadas
+    points = [0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99, 1.00]
     p = 0
     t = 0
     j = j0 - 1
-    while T[t] != 1.00:
+    while points[t] != 1.00:
         j += 1
         p = p + A[j]
-        if p > T[t]:
+        if p > points[t]:
             array.append((1-p, n-j-1))
             # con probabilidad 1-p hay no mas de n - j - 1 colisiones
-            while p > T[t]:
+            while p > points[t]:
                 t += 1
-    print(array)
-    return
+    return array
 
 
 def count_collisions(arr):
@@ -70,12 +71,62 @@ def count_collisions(arr):
     return collisions
 
 
-def collision_test(arr, sigma, params):
-    calculate_percentage_points(sigma, len(arr))
-    collisions = count_collisions(arr)
-    print(collisions)
+def transform_input(numbers, block_size):
+    res = []
+    num_of_blocks = int(math.floor(len(numbers)/block_size))
+    for i in range(num_of_blocks):
+        block = numbers[i*block_size:((i+1)*block_size)]
+        res.append(convert(block))
+    return res
 
-    success = True
-    p = 0.03
+
+def convert(block):
+    s = ""
+    for i in block:
+        s = s + str(i)
+    return int(s)
+
+
+def get_expected(percentage_points, num_of_blocks):
+    #percentage points es un arreglo de (p,n) con probabilidad p hay no mas de n colisiones
+    exp = [0] * (len(percentage_points) + 1)
+    exp[0] = 1 - percentage_points[0][0]
+    for i in range(1,len(percentage_points)):
+        exp[i] = percentage_points[i-1][0] - percentage_points[i][0]
+    exp[len(percentage_points)] = percentage_points[len(percentage_points) - 1][0]
+    return [num_of_blocks*x for x in exp]
+
+
+def get_histogram(percentage_points, collisions):
+    histogram = [0] * (len(percentage_points) + 1)
+    for col in collisions:
+        histogram[get_bucket(percentage_points, col)] += 1
+    return histogram
+
+
+def get_bucket(percentage_points, col):
+    for j in range(len(percentage_points)):
+        if col > percentage_points[j][1]:
+            return j
+    return len(percentage_points)
+
+def collision_test(arr, sigma):
+    block_size = 1000
+    collisions = []
+    zalala = 5
+    arr = transform_input(arr, zalala) # ahora el input se transformó.
+    num_of_blocks = int(math.floor(len(arr)/block_size))
+    percentage_points = calculate_percentage_points(sigma**zalala, block_size)
+    expected = get_expected(percentage_points, num_of_blocks) # esto enchufo al chi cuadrado
+
+    for i in range(num_of_blocks):
+        block = arr[i*block_size:((i+1)*block_size)]
+        collision = count_collisions(block)
+        collisions.append(collision)
+
+    histogram = get_histogram(percentage_points, collisions)
+
+    chisq, p = chisquare(histogram, expected, 0, None)
+    success = (p >= 0.01)
     return success, p, None
 
