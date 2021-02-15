@@ -46,6 +46,7 @@ def get_z(r, mu, stddev):
         return (r - mu + 0.5) / stddev
 
 
+# TODO: Este tiene params?
 def number_of_runs_test(arr, sigma, params):
     number_of_characters = count_vars(arr, sigma)
     n = len(arr)

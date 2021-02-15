@@ -110,7 +110,7 @@ def get_bucket(percentage_points, col):
             return j
     return len(percentage_points)
 
-def collision_test(arr, sigma):
+def collision_test(arr, sigma, params):
     block_size = 1000
     collisions = []
     zalala = 5
