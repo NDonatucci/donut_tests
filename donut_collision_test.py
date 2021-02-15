@@ -111,13 +111,13 @@ def get_bucket(percentage_points, col):
     return len(percentage_points)
 
 def collision_test(arr, sigma, params):
-    block_size = 1000
+    block_size = params["block_size"] if "block_size" in params else 1000
+    m = params["m"] if "m" in params else 5
     collisions = []
-    zalala = 5
-    arr = transform_input(arr, zalala) # ahora el input se transformó.
+    arr = transform_input(arr, m)
     num_of_blocks = int(math.floor(len(arr)/block_size))
-    percentage_points = calculate_percentage_points(sigma**zalala, block_size)
-    expected = get_expected(percentage_points, num_of_blocks) # esto enchufo al chi cuadrado
+    percentage_points = calculate_percentage_points(sigma**m, block_size)
+    expected = get_expected(percentage_points, num_of_blocks)
 
     for i in range(num_of_blocks):
         block = arr[i*block_size:((i+1)*block_size)]
