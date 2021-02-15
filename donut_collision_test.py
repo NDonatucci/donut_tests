@@ -88,7 +88,7 @@ def convert(block):
 
 
 def get_expected(percentage_points, num_of_blocks):
-    #percentage points es un arreglo de (p,n) con probabilidad p hay no mas de n colisiones
+    # percentage points es un arreglo de (p,n) con probabilidad p hay no mas de n colisiones
     exp = [0] * (len(percentage_points) + 1)
     exp[0] = 1 - percentage_points[0][0]
     for i in range(1,len(percentage_points)):
@@ -109,6 +109,7 @@ def get_bucket(percentage_points, col):
         if col > percentage_points[j][1]:
             return j
     return len(percentage_points)
+
 
 def collision_test(arr, sigma, params):
     block_size = params["block_size"] if "block_size" in params else 1000
