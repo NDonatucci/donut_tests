@@ -22,14 +22,12 @@
 
 from __future__ import print_function
 
-import csv
-
-import numpy
 import json
 
 import argparse
-import matplotlib.pyplot
-import scipy.stats
+import pandas as pd
+import results
+
 parser = argparse.ArgumentParser(description='Test data for distinguishability form random, using NIST SP800-22Rev1a algorithms.')
 parser.add_argument('alphabet_size', type=int, help='Size of alphabet to consider')
 parser.add_argument('filename', type=str, nargs='?', help='Filename of binary file to test')
@@ -48,30 +46,26 @@ test = args.test
 config_path = args.config
 stream_size = args.stream_size
 
-config = []
+
+def get_numbers(block):
+    res = []
+    for index, row in block.iterrows():
+        res.append(int(row[0]))
+    return res
+
+
+config = {}
 with open(config_path) as config_payload:
     config = json.load(config_payload)
 
-# with open(filename, 'r') as source:
-#     reader = csv.reader(source)
-#     for row in reader:
-#         data = row[0]
-#         stuff = data.split(";")
-#         if stuff[0] != '0':
-#             number = stuff[2]
-#             dest.write(number)
-#             dest.write("\n")
-
+# Run a whole test
 m = __import__("donut_" + test + "_test")
 func = getattr(m, test + "_test")
 p_values = []
-for i in range(0, 10000):
-    print(i)
-    arr = numpy.random.randint(0, sigma, 100000)
+
+for chunk in pd.read_csv(filename, chunksize=stream_size):
+    arr = get_numbers(chunk)
+    print(len(arr))
     (success,p,plist) = func(arr, sigma, config[test])
     p_values.append(p)
-
-matplotlib.pyplot.hist(p_values, 10)
-matplotlib.pyplot.show()
-statistic, kspvalue = scipy.stats.kstest(p_values, 'uniform')
-print(kspvalue)
+results.report_test(p_values, test)

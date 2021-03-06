@@ -21,5 +21,8 @@
   "collision": {
     "m": 5,
     "block_size": 1000
+  },
+  "monobit": {
+
   }
 }
