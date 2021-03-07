@@ -1,28 +1,34 @@
 {
-  "frequency_within_block": {
-    "block_size": 40
-  },
-  "frequency_of_words": {
-    "block_size": 40,
-    "pattern_length": 3
-  },
-  "gap": {
-    "alpha": 0.3,
-    "beta": 0.6,
-    "m":5
-  },
-  "longest_run_within_block": {
-    "character": 0,
-    "block_size": 40
-  },
-  "poker": {
-    "hand_size": 5
-  },
-  "collision": {
-    "m": 5,
-    "block_size": 1000
-  },
-  "monobit": {
+  "tests": [
+    "monobit",
+    "frequency_within_block"
+  ],
+  "configs": {
+    "frequency_within_block": {
+      "block_size": 40
+    },
+    "frequency_of_words": {
+      "block_size": 40,
+      "pattern_length": 3
+    },
+    "gap": {
+      "alpha": 0.3,
+      "beta": 0.6,
+      "m":5
+    },
+    "longest_run_within_block": {
+      "character": 0,
+      "block_size": 40
+    },
+    "poker": {
+      "hand_size": 5
+    },
+    "collision": {
+      "m": 5,
+      "block_size": 1000
+    },
+    "monobit": {
 
+    }
   }
 }

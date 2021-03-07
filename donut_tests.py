@@ -59,13 +59,13 @@ with open(config_path) as config_payload:
     config = json.load(config_payload)
 
 # Run a whole test
-m = __import__("donut_" + test + "_test")
-func = getattr(m, test + "_test")
-p_values = []
+for test in config["tests"]:
+    m = __import__("donut_" + test + "_test")
+    func = getattr(m, test + "_test")
+    p_values = []
 
-for chunk in pd.read_csv(filename, chunksize=stream_size):
-    arr = get_numbers(chunk)
-    print(len(arr))
-    (success,p,plist) = func(arr, sigma, config[test])
-    p_values.append(p)
-results.report_test(p_values, test)
+    for chunk in pd.read_csv(filename, chunksize=stream_size):
+        arr = get_numbers(chunk)
+        (success,p,plist) = func(arr, sigma, config["configs"][test])
+        p_values.append(p)
+    results.report_test(p_values, test)
