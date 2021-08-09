@@ -26,26 +26,24 @@ from scipy.stats import chisquare
 import math
 
 
-def calculate_percentage_points(m, n):
+def calculate_percentage_points(m, n, points):
     array = []
     A = [0] * (n+1)
     A[1] = 1
     j0 = 1
     j1 = 1
-    treshold = 10**-20
+    threshold = 10**-20
     for i in range(n-1):
         j1 += 1
-        for j in range(j1, j0-1, -1):   # revisar
+        for j in range(j1, j0-1, -1):
             A[j] = (j/m)*A[j] + ((1 + 1/m) - (j/m))*A[j-1]
-            if A[j] < treshold:
+            if A[j] < threshold:
                 A[j] = 0
                 if j == j1:
                     j1 -= 1
                 if j == j0:
                     j0 += 1
 
-    # A[j] = prob de que exactamente j urnas estén ocupadas
-    points = [0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99, 1.00]
     p = 0
     t = 0
     j = j0 - 1
@@ -54,7 +52,6 @@ def calculate_percentage_points(m, n):
         p = p + A[j]
         if p > points[t]:
             array.append((1-p, n-j-1))
-            # con probabilidad 1-p hay no mas de n - j - 1 colisiones
             while p > points[t]:
                 t += 1
     return array
@@ -88,7 +85,6 @@ def convert(block):
 
 
 def get_expected(percentage_points, num_of_blocks):
-    # percentage points es un arreglo de (p,n) con probabilidad p hay no mas de n colisiones
     exp = [0] * (len(percentage_points) + 1)
     exp[0] = 1 - percentage_points[0][0]
     for i in range(1,len(percentage_points)):
@@ -114,10 +110,11 @@ def get_bucket(percentage_points, col):
 def collision_test(arr, sigma, params):
     block_size = params["block_size"] if "block_size" in params else 1000
     m = params["m"] if "m" in params else 5
+    points = params["percentage_points"] if "percentage_points" in params else [0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99, 1.00]
     collisions = []
     arr = transform_input(arr, m)
     num_of_blocks = int(math.floor(len(arr)/block_size))
-    percentage_points = calculate_percentage_points(sigma**m, block_size)
+    percentage_points = calculate_percentage_points(sigma**m, block_size, points)
     expected = get_expected(percentage_points, num_of_blocks)
 
     for i in range(num_of_blocks):
