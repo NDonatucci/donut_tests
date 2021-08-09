@@ -75,7 +75,7 @@ def longest_run_within_block_test(arr, sigma, params):
 
     num_of_blocks = int(math.floor(n/block_size))
 
-    random_variables = [0] * block_size
+    random_variables = [0] * (block_size +1)
     for i in range(num_of_blocks):
         block = arr[i*block_size:((i+1)*block_size)]
         run = count_longest_run(block, t)
@@ -95,7 +95,4 @@ def longest_run_within_block_test(arr, sigma, params):
     chisq, p = chisquare(random_variables, [i * num_of_blocks for i in probs], 0, None)
 
     success = (p >= 0.01)
-    if not success:
-        print(random_variables)
-        print([i * num_of_blocks for i in probs])
     return success, p, None

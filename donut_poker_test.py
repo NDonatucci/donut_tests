@@ -24,6 +24,7 @@ from __future__ import print_function
 
 from scipy.stats import chisquare
 from utils import stirling
+from utils import collapse_categories
 import math
 
 
@@ -51,36 +52,17 @@ def generate_probabilities(sigma, hand_size):
     return res
 
 
-def collapse_categories(n, probabilities):
-    sum = 0
-    for i in range(len(probabilities)):
-        sum += probabilities[i]
-        if sum * n >= 5:
-            return i + 1
-
-
-def collapse(arr, i):
-    res = list()
-    sum = 0
-    for j in range(i):
-        sum += arr[j]
-    res.append(sum)
-    res.extend(arr[i+1:])
-    return res
-
-
 # hand_size = Size of hand
 def poker_test(arr, sigma, params):
     hand_size = params["hand_size"] if "hand_size" in params else 5
     random_variables = get_hands(arr, hand_size)
     probabilities = generate_probabilities(sigma, hand_size)
     n = sum(random_variables)
-    i = collapse_categories(n, probabilities)
-    random_variables = collapse(random_variables, i)
-    probabilities = collapse(probabilities, i)
-    expected_values = list(map(lambda x: x * n, probabilities))
+    collapsed_probs, collapsed_vars = collapse_categories(probabilities, random_variables, n, 5)
 
-    chisq, p = chisquare(random_variables, expected_values, 0, None)
+    expected_values = list(map(lambda x: x * n, collapsed_probs))
+
+    chisq, p = chisquare(collapsed_vars, expected_values, 0, None)
 
     success = (p >= 0.01)
     return success, p, None

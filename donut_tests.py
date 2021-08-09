@@ -32,7 +32,6 @@ parser = argparse.ArgumentParser(description='Test data for distinguishability f
 parser.add_argument('alphabet_size', type=int, help='Size of alphabet to consider')
 parser.add_argument('filename', type=str, nargs='?', help='Filename of binary file to test')
 parser.add_argument('-t', '--testname', default=None,help='Select the test to run. Defaults to running all tests. Use --list_tests to see the list')
-parser.add_argument('--list_tests', action='store_true',help='Display the list of tests')
 parser.add_argument('--mode', default="default", type=str)
 parser.add_argument('--test', default="monobit", type=str)
 parser.add_argument('--config', default="config.json", type=str)
@@ -64,8 +63,9 @@ for test in config["tests"]:
     func = getattr(m, test + "_test")
     p_values = []
 
-    for chunk in pd.read_csv(filename, chunksize=stream_size):
+    for chunk in pd.read_csv(filename, chunksize=stream_size, header=None):
         arr = get_numbers(chunk)
-        (success,p,plist) = func(arr, sigma, config["configs"][test])
-        p_values.append(p)
+        if (len(arr) == stream_size):
+            (success,p,plist) = func(arr, sigma, config["configs"][test])
+            p_values.append(p)
     results.report_test(p_values, test)

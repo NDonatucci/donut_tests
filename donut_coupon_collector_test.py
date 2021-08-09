@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 
+import math
+
 from utils import stirling
 from scipy.special import factorial
 from scipy.stats import chisquare
@@ -64,6 +66,8 @@ def coupon_collector_test(arr, sigma, params):
     expected_values = list(map(lambda x: x * n, probabilities))
 
     chisq, p = chisquare(histogram, expected_values, 0, None)
+    if math.isnan(p):
+        p = 0
 
     success = (p >= 0.01)
     return success, p, None
