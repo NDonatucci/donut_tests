@@ -1,14 +1,18 @@
 {
   "tests": [
     "monobit",
-    "frequency_within_block"
+    "frequency_within_block",
+    "frequency_of_words",
+    "gap",
+    "poker",
+    "coupon_collector",
+    "longest_run_within_block",
+    "collision"
   ],
   "configs": {
     "frequency_within_block": {
-      "block_size": 40
     },
     "frequency_of_words": {
-      "block_size": 40,
       "pattern_length": 3
     },
     "gap": {
@@ -17,8 +21,7 @@
       "m":5
     },
     "longest_run_within_block": {
-      "character": 0,
-      "block_size": 40
+      "character": 0
     },
     "poker": {
       "hand_size": 5
@@ -28,6 +31,9 @@
       "block_size": 1000
     },
     "monobit": {
+
+    },
+    "coupon_collector": {
 
     }
   }

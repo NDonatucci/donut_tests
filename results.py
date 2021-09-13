@@ -13,7 +13,7 @@ def report_test(p_values, test_name):
     statistic, kspvalue = scipy.stats.kstest(p_values, 'uniform')
 
     print(test_name.upper() + ":")
-    print("Kolmogorof-smirnov: " + str(kspvalue))
+    print("Kolmogorov-Smirnov: " + str(kspvalue))
     if kspvalue > 0.01:
         print("PASS")
     else:
