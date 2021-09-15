@@ -17,7 +17,7 @@ def count_block_vars(block, sigma):
 # At least n=100 recommended
 # No more than 99 blocks recommended
 # M = Block Size
-def frequency_within_block_test(arr, sigma, params):
+def frequency_within_block_test(arr, sigma, params, significance_level):
     n = len(arr)
     block_size = params["block_size"] if "block_size" in params else int(math.floor(n/99))
     num_of_blocks = int(math.floor(n/block_size))
@@ -31,5 +31,5 @@ def frequency_within_block_test(arr, sigma, params):
 
     chisq, p = chisquare(random_variables, [expected_value] * (num_of_blocks * sigma), num_of_blocks - 1, None)
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None

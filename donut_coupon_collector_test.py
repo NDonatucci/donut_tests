@@ -55,7 +55,7 @@ def find_t(sigma, n):
 
 
 # t = Album size after which all categories will be collapsed.
-def coupon_collector_test(arr, sigma, params):
+def coupon_collector_test(arr, sigma, params, significance_level):
     album_sizes = get_album_sizes(arr, sigma)
     n = len(album_sizes)
 
@@ -69,5 +69,5 @@ def coupon_collector_test(arr, sigma, params):
     if math.isnan(p):
         p = 0
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None

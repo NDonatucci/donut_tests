@@ -53,7 +53,7 @@ def generate_probabilities(sigma, hand_size):
 
 
 # hand_size = Size of hand
-def poker_test(arr, sigma, params):
+def poker_test(arr, sigma, params, significance_level):
     hand_size = params["hand_size"] if "hand_size" in params else 5
     random_variables = get_hands(arr, hand_size)
     probabilities = generate_probabilities(sigma, hand_size)
@@ -64,5 +64,5 @@ def poker_test(arr, sigma, params):
 
     chisq, p = chisquare(collapsed_vars, expected_values, 0, None)
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None

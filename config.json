@@ -36,5 +36,6 @@
     "coupon_collector": {
 
     }
-  }
+  },
+  "significance_level": 0.01
 }

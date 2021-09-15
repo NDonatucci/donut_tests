@@ -3,8 +3,7 @@ import scipy.stats
 from pathlib import Path
 
 
-# TODO: Significance level
-def report_test(p_values, test_name):
+def report_test(p_values, test_name, significance_level):
     dir = "out/" + test_name
     Path(dir).mkdir(parents=True, exist_ok=True)
     matplotlib.pyplot.hist(p_values, 10)
@@ -14,7 +13,7 @@ def report_test(p_values, test_name):
 
     print(test_name.upper() + ":")
     print("Kolmogorov-Smirnov: " + str(kspvalue))
-    if kspvalue > 0.01:
+    if kspvalue > significance_level:
         print("PASS")
     else:
         print("FAIL")
@@ -22,7 +21,7 @@ def report_test(p_values, test_name):
 
     with open(dir + "/" + test_name + ".result", "w") as out:
         for p in p_values:
-            if p > 0.01:
+            if p > significance_level:
                 out.write(str(p) + " PASS\n")
             else:
                 out.write(str(p) + " FAIL\n")

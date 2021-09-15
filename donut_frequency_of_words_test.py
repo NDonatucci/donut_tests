@@ -21,7 +21,7 @@ def count_block_appearances(arr, m, sigma):
 # no more than 99 blocks recommended
 # m = length of pattern
 # M = block size
-def frequency_of_words_test(arr, sigma, params):
+def frequency_of_words_test(arr, sigma, params, significance_level):
     n = len(arr)
     m = params["pattern_length"] if "pattern_length" in params else 3
     block_size = params["block_size"] if "block_size" in params else int(math.floor(n/99))
@@ -36,5 +36,5 @@ def frequency_of_words_test(arr, sigma, params):
 
     chisq, p = chisquare(random_variables, [expected_value] * (N * sigma**m), N - 1, None)
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None

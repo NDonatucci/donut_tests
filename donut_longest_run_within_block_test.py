@@ -64,7 +64,7 @@ def collapse_categories(arr, index):
 # t = Given character of the alphabet
 # m = Block Size
 # algo pal colapso de la cola? TODO: Estis
-def longest_run_within_block_test(arr, sigma, params):
+def longest_run_within_block_test(arr, sigma, params, significance_level):
     t = params["character"] if "character" in params else 0
     block_size = params["block_size"] if "block_size" in params else 40
     n = len(arr)
@@ -94,5 +94,5 @@ def longest_run_within_block_test(arr, sigma, params):
 
     chisq, p = chisquare(random_variables, [i * num_of_blocks for i in probs], 0, None)
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None

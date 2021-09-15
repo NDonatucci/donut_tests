@@ -57,6 +57,8 @@ config = {}
 with open(config_path) as config_payload:
     config = json.load(config_payload)
 
+significance_level = config["significance_level"]
+
 # Run a whole test
 for test in config["tests"]:
     m = __import__("donut_" + test + "_test")
@@ -66,6 +68,6 @@ for test in config["tests"]:
     for chunk in pd.read_csv(filename, chunksize=stream_size, header=None):
         arr = get_numbers(chunk)
         if (len(arr) == stream_size):
-            (success,p,plist) = func(arr, sigma, config["configs"][test])
+            (success,p,plist) = func(arr, sigma, config["configs"][test], significance_level)
             p_values.append(p)
-    results.report_test(p_values, test)
+    results.report_test(p_values, test, significance_level)

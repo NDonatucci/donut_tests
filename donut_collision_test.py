@@ -107,7 +107,7 @@ def get_bucket(percentage_points, col):
     return len(percentage_points)
 
 
-def collision_test(arr, sigma, params):
+def collision_test(arr, sigma, params, significance_level):
     block_size = params["block_size"] if "block_size" in params else 1000
     m = params["m"] if "m" in params else 5
     points = params["percentage_points"] if "percentage_points" in params else [0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99, 1.00]
@@ -125,6 +125,6 @@ def collision_test(arr, sigma, params):
     histogram = get_histogram(percentage_points, collisions)
 
     chisq, p = chisquare(histogram, expected, 0, None)
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None
 

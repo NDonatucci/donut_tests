@@ -67,7 +67,7 @@ def generate_probabilities(p, t):
 # Beta = Higher end of interval
 # m = How many integers to use for a single float
 # t = Gap size after which categories will be collapsed
-def gap_test(arr, sigma, params):
+def gap_test(arr, sigma, params, significance_level):
     m = params["m"] if "m" in params else 5
     alpha = params["alpha"] if "alpha" in params else 1/3
     beta = params["beta"] if "beta" in params else 2/3
@@ -86,6 +86,6 @@ def gap_test(arr, sigma, params):
     if math.isnan(p):
         p = 0
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None
 

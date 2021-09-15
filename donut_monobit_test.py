@@ -11,7 +11,7 @@ def count_vars(block, sigma):
 
 
 # At least n=100 recommended
-def monobit_test(arr, sigma, params):
+def monobit_test(arr, sigma, params, significance_level):
     n = len(arr)
 
     expected_value = n * 1.0 / sigma
@@ -19,5 +19,5 @@ def monobit_test(arr, sigma, params):
 
     chisq, p = chisquare(random_variables, [expected_value] * sigma, 0, None)
 
-    success = (p >= 0.01)
+    success = (p >= significance_level)
     return success, p, None
