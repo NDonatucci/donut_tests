@@ -25,10 +25,9 @@ from __future__ import print_function
 import json
 
 import argparse
-import pandas as pd
 import results
 
-parser = argparse.ArgumentParser(description='Test data for distinguishability form random, using NIST SP800-22Rev1a algorithms.')
+parser = argparse.ArgumentParser(description='Test data for distinguishability form random')
 parser.add_argument('alphabet_size', type=int, help='Size of alphabet to consider')
 parser.add_argument('filename', type=str, nargs='?', help='Filename of binary file to test')
 parser.add_argument('-t', '--testname', default=None,help='Select the test to run. Defaults to running all tests. Use --list_tests to see the list')
@@ -46,11 +45,16 @@ config_path = args.config
 stream_size = args.stream_size
 
 
-def get_numbers(block):
-    res = []
-    for index, row in block.iterrows():
-        res.append(int(row[0]))
-    return res
+def get_stream(file, offset, size):
+    arr = []
+    with open(file, "r") as input:
+        input.seek(offset)
+        for i in range(size):
+            line = input.readline()
+            line = line.rstrip()
+            arr.append(int(line))
+        stop = input.tell()
+        return (arr, stop)
 
 
 config = {}
@@ -65,9 +69,13 @@ for test in config["tests"]:
     func = getattr(m, test + "_test")
     p_values = []
 
-    for chunk in pd.read_csv(filename, chunksize=stream_size, header=None):
-        arr = get_numbers(chunk)
-        if (len(arr) == stream_size):
-            (success,p,plist) = func(arr, sigma, config["configs"][test], significance_level)
-            p_values.append(p)
+    num_lines = sum(1 for line in open(filename))
+    streams = num_lines//stream_size
+
+    offset = 0
+    for i in range(streams):
+        (arr, position) = get_stream(filename, offset, stream_size)
+        offset = position
+        (success,p,plist) = func(arr, sigma, config["configs"][test], significance_level)
+        p_values.append(p)
     results.report_test(p_values, test, significance_level)
