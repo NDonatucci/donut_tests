@@ -81,8 +81,9 @@ def gap_test(arr, sigma, params, significance_level):
     histogram = get_histogram(gaps, t)
     probabilities = generate_probabilities(beta - alpha, t)
     expected_values = list(map(lambda x: x * n, probabilities))
-
-    chisq, p = chisquare(histogram, expected_values, 0, None)
+    p = 0
+    if sum(expected_values) != 0 and sum(probabilities) != 0:
+        chisq, p = chisquare(histogram, expected_values, 0, None)
     if math.isnan(p):
         p = 0
 
